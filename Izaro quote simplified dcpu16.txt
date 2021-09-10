@@ -1,0 +1,44 @@
+SET PC main
+
+; strings
+:quote
+DAT ""A throne is the most devious   trap of them all."", 0
+
+:reference
+DAT "-Emperor Izaro Phrecius", 0
+
+
+; Main
+:main
+
+SET J, 0x8000
+SET B, 0x2600 ; Foreground green|background brown
+SET C, 0x0200 ; Background green
+SET X, 0x0020 ; Blank space
+SET I, quote
+
+
+:quote_loop
+SET Z, [I]
+BOR Z, B
+STI [J], Z
+IFN [I], 0
+SET PC, quote_loop
+
+
+SET I, 0
+SET Z, X
+:blank_loop
+BOR Z, C
+STI [J], Z
+IFL I, 82
+SET PC, blank_loop
+
+
+SET I, reference
+:reference_loop
+SET Z, [I]
+BOR Z, B
+STI [J], Z
+IFN [I], 0
+SET PC, reference_loop

@@ -1,0 +1,75 @@
+
+*MVS WIN32*
+
+.586
+.MODEL FLAT
+
+INCLUDE io.h            ; header file for input/output
+
+.STACK 4096
+
+.DATA
+totalInt  DWORD   ?
+divisor   DWORD   ?
+prompt1   BYTE    "Enter the number of cents: ", 0
+string    BYTE    40 DUP (?)
+rTitle    BYTE  "The distribution of "
+total     BYTE    11 DUP (?)
+          BYTE  " cents into larger coins:", 0
+results   BYTE  "The number of Quarters is: "
+quarters  BYTE    11 DUP (?), 13, 10
+          BYTE  "The number of Dimes is: "
+dimes     BYTE    11 DUP (?), 13, 10
+          BYTE  "The number of Nickles is: "
+nickles   BYTE    11 DUP (?), 13, 10
+          BYTE  "The number of Pennies is: "
+pennies   BYTE    11 DUP (?), 0
+
+.CODE
+_MainProc PROC
+        input   prompt1, string, 40     ; read ASCII characters
+        atod    string                  ; convert to integer
+        dtoa    total, eax              ; Sets the total for output
+
+        sub     edx, edx                ; Empties EDX
+        mov     divisor, 25             ; Sets the divisor
+        div     divisor
+        dtoa    quarters, eax           ; Sets the number of quarters
+
+        mov     eax, edx                ; Moves the new total into EAX for division
+        sub     edx, edx                ; Empties EDX
+        mov     divisor, 10             ; Sets the divisor
+        div     divisor
+        dtoa    dimes, eax              ; Sets the number of dimes
+
+        mov     eax, edx                ; Moves the new total into EAX for division
+        sub     edx, edx                ; Empties EDX
+        mov     divisor, 5              ; Sets the divisor
+        div     divisor
+        dtoa    nickles, eax            ; Sets the number of nickles
+
+        dtoa    pennies, edx            ; Sets the number of pennies
+
+        output  rTitle, results         ; output label and sum
+
+        mov     eax, 0  ; exit with return code 0
+        ret
+_MainProc ENDP
+END                             ; end of source code
+
+
+*DCPU-16*
+
+SET X, 87
+
+SET A, X
+DIV A, 25
+MOD X, 25
+
+SET B, X
+DIV B, 10
+MOD X, 10
+
+SET C, X
+DIV C, 5
+MOD X, 5
